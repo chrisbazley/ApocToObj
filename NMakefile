@@ -1,0 +1,39 @@
+# Project:   ApocToObj
+
+# Tools
+CC = cc
+Link = link
+AS = objasm
+
+# Toolflags:
+CCCommonFlags = -c -depend !Depend -IC: -throwback -fahi -apcs 3/32/fpe2/swst/fp/nofpr -memaccess -L22-S22-L41
+CCflags = $(CCCommonFlags) -DNDEBUG -Otime
+CCDebugFlags = $(CCCommonFlags) -g -DUSE_CBDEBUG -DFORTIFY -DDEBUG_OUTPUT
+Linkflags = -aif -c++
+LinkDebugFlags = $(Linkflags) -d
+
+include MakeCommon
+
+DebugObjectsApoc = $(addprefix debug.,$(ObjectList))
+ReleaseObjectsApoc = $(addprefix o.,$(ObjectList))
+DebugLibs = C:o.Stubs C:o.Fortify C:o.CBDebugLib C:debug.CBUtilLib \
+            C:debug.StreamLib C:debug.3dObjLib
+ReleaseLibs = C:o.StubsG C:o.CBUtilLib C:o.StreamLib C:o.3dObjLib
+
+# Final targets:
+all: ApocToObj ApocToObjD 
+
+ApocToObj: $(ReleaseObjectsApoc)
+	$(Link) $(LinkFlags) -o $@ $(ReleaseObjectsApoc) $(ReleaseLibs)
+
+ApocToObjD: $(DebugObjectsApoc)
+	$(Link) $(LinkDebugFlags) -o $@ $(DebugObjectsApoc) $(DebugLibs)
+
+# User-editable dependencies:
+.SUFFIXES: .o .c .debug
+.c.o:; cc $(CCflags) -o $@ $<
+.c.debug:; cc $(CCDebugFlags) -o $@ $<
+
+# Static dependencies:
+
+# Dynamic dependencies:

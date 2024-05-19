@@ -3,7 +3,7 @@ Apocalypse to Wavefront convertor
 
 (C) Christopher Bazley, 2020
 
-Version 0.02 (22 Apr 2020)
+Version 0.03 (19 May 2024)
 
 -----------------------------------------------------------------------------
  1   Introduction and Purpose
@@ -735,6 +735,10 @@ Vertex data format:
 0.02 (22 Apr 2020)
 - Converted flats now face in the positive Z direction (towards the camera).
 
+0.03 (19 May 2024)
+- Added a new makefile for use on Linux.
+- Improved the README.md file for Linux users.
+
 -----------------------------------------------------------------------------
 8  Compiling the software
 -------------------------
@@ -744,12 +748,14 @@ and link the code you will also require an ISO 9899:1999 standard 'C'
 library and three of my own libraries: 3dObjLib, CBUtilLib and StreamLib.
 These are available separately from https://github.com/chrisbazley/
 
-  Two make files are supplied:
+  Three make files are supplied:
 
-1. 'Makefile' is intended for use with Acorn Make Utility (AMU) and the
+1. 'Makefile' is intended for use with GNU Make and the GNU C Compiler on Linux.
+
+2. 'NMakefile' is intended for use with Acorn Make Utility (AMU) and the
    Norcroft C compiler supplied with the Acorn C/C++ Development Suite.
 
-2. 'GMakefile' is intended for use with GNU Make and the GNU C Compiler.
+3. 'GMakefile' is intended for use with GNU Make and the GNU C Compiler on RISC OS.
 
   The APCS variant specified for the Norcroft compiler is 32 bit for
 compatibility with ARMv5 and fpe2 for compatibility with older versions of
@@ -757,12 +763,14 @@ the floating point emulator. Generation of unaligned data loads/stores is
 disabled for compatibility with ARMv6. When building the code for release,
 it is linked with RISCOS Ltd's generic C library stubs ('StubsG').
 
-  Before compiling the program for other platforms, rename the C source and
-header files with .c and .h file extensions then move them out of their
-respective subdirectories. The only platform-specific code is the
-PATH_SEPARATOR macro definition in misc.h. This must be defined according to
-the file path convention on the the target platform (e.g. '\' for DOS or
-Windows).
+  Before compiling the library for RISC OS, move the C source and header files
+with .c and .h suffixes into subdirectories named 'c' and 'h' and remove those
+suffixes from their names. You probably also need to create 'o', 'd' and 'debug'
+subdirectories for compiler output.
+
+  The only platform-specific code is the EXT_SEPARATOR and PATH_SEPARATOR
+macro definitions in misc.h. These must be defined according to the file name
+convention on the target platform (e.g. '.' and '\' for DOS or Windows).
 
 -----------------------------------------------------------------------------
 9  Licence and Disclaimer
