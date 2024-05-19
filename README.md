@@ -770,7 +770,7 @@ subdirectories for compiler output.
 
   The only platform-specific code is the EXT_SEPARATOR and PATH_SEPARATOR
 macro definitions in misc.h. These must be defined according to the file name
-convention on the target platform (e.g. '.' and '\' for DOS or Windows).
+convention on the target platform (e.g. '.' and '\\' for DOS or Windows).
 
 -----------------------------------------------------------------------------
 9  Licence and Disclaimer
