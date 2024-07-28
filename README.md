@@ -260,7 +260,7 @@ Named objects:
 |  192..199 | lhaktal_gourd_f0..7
 
 4.5 Listing and summarizing objects
-    -------------------------------
+-----------------------------------
 Switches:
 ```
   -list     List objects instead of converting them
