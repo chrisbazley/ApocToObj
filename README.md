@@ -3,7 +3,7 @@ Apocalypse to Wavefront convertor
 
 (C) Christopher Bazley, 2020
 
-Version 0.03 (19 May 2024)
+Version 0.04 (11 Apr 2025)
 
 -----------------------------------------------------------------------------
  1   Introduction and Purpose
@@ -738,6 +738,9 @@ Vertex data format:
 0.03 (19 May 2024)
 - Added a new makefile for use on Linux.
 - Improved the README.md file for Linux users.
+
+0.04 (11 Apr 2025)
+- Dogfooding the _Optional qualifier.
 
 -----------------------------------------------------------------------------
 8  Compiling the software

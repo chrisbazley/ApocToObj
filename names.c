@@ -80,7 +80,7 @@ const char *get_obj_name(const int index)
     { 181, 187, "snailherd"},
     { 192, 199, "lhaktal_gourd"},
   };
-  const char *n = NULL;
+  _Optional const char *n = NULL;
   assert(index >= 0);
 
   for (size_t i = 0; (n == NULL) && (i < ARRAY_SIZE(names)); ++i) {
@@ -109,5 +109,5 @@ const char *get_obj_name(const int index)
     n = buffer;
   }
 
-  return n;
+  return &*n;
 }

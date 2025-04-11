@@ -51,15 +51,15 @@ enum {
   MaxNumObjects = 200,
 };
 
-static bool process_file(const char * const in_file,
-                         const char * const output_file,
+static bool process_file(_Optional const char * const in_file,
+                         _Optional const char * const output_file,
                          const int first, const int last,
-                         const char * const name,
+                         _Optional const char * const name,
                          const long int index_offset,
                          const char * const mtl_file,
                          const unsigned int flags, const bool time)
 {
-  FILE *out = NULL, *in = NULL;
+  _Optional FILE *out = NULL, *in = NULL;
   bool success = true;
 
   assert(!(flags & ~FLAGS_ALL));
@@ -69,7 +69,7 @@ static bool process_file(const char * const in_file,
     if (flags & FLAGS_VERBOSE)
       printf("Opening input file '%s'\n", in_file);
 
-    in = fopen(in_file, "rb");
+    in = fopen(&*in_file, "rb");
     if (in == NULL) {
       fprintf(stderr, "Failed to open input file '%s': %s\n",
                       in_file, strerror(errno));
@@ -88,7 +88,7 @@ static bool process_file(const char * const in_file,
       if (flags & FLAGS_VERBOSE)
         printf("Opening output file '%s'\n", output_file);
 
-      out = fopen(output_file, "w");
+      out = fopen(&*output_file, "w");
       if (out == NULL) {
         fprintf(stderr, "Failed to open output file '%s': %s\n",
                         output_file, strerror(errno));
@@ -100,11 +100,11 @@ static bool process_file(const char * const in_file,
     }
   }
 
-  if (success) {
+  if (success && in) {
     const clock_t start_time = time ? clock() : 0;
 
     Reader reader;
-    reader_raw_init(&reader, in);
+    reader_raw_init(&reader, &*in);
 
     if (success) {
       success = apoc_to_obj(&reader, out, first, last, name,
@@ -123,14 +123,14 @@ static bool process_file(const char * const in_file,
   if (in != NULL && in != stdin) {
     if (flags & FLAGS_VERBOSE)
       puts("Closing input file");
-    fclose(in);
+    fclose(&*in);
   }
 
   if (out != NULL && out != stdout) {
     if (flags & FLAGS_VERBOSE)
       puts("Closing output file");
 
-    if (fclose(out)) {
+    if (fclose(&*out)) {
       fprintf(stderr, "Failed to close output file '%s': %s\n",
                       output_file, strerror(errno));
       success = false;
@@ -139,8 +139,9 @@ static bool process_file(const char * const in_file,
 
   /* Delete malformed output unless debugging is enabled or
      it may actually be the index (still intact) */
-  if (!success && !(flags & FLAGS_VERBOSE) && out != NULL && out != stdout) {
-    remove(output_file);
+  if (!success && !(flags & FLAGS_VERBOSE) && out != NULL && out != stdout &&
+      output_file) {
+    remove(&*output_file);
   }
 
   return success;
@@ -221,11 +222,11 @@ int main(int argc, const char *argv[])
   int n, first = -1, last = -1;
   long int index_offset = -1;
   unsigned int flags = 0;
-  const char *name = NULL;
+  _Optional const char *name = NULL;
   bool time = false, batch = false;
   int rtn = EXIT_SUCCESS;
-  const char *in_file = NULL, *output_file = NULL,
-             *mtl_file = "sf3k.mtl";
+  _Optional const char *in_file = NULL, *output_file = NULL;
+  const char *mtl_file = "sf3k.mtl";
 
   assert(argc > 0);
   assert(argv != NULL);

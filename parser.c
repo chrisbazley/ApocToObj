@@ -73,8 +73,11 @@ static void flip_backfacing(VertexArray * const varray,
   Coord norm[3] = {0,0,1};
   int const n = group_get_num_primitives(group);
   for (int p = 0; p < n; ++p) {
-    Primitive *const pp = group_get_primitive(group, p);
-    if (primitive_set_normal(pp, varray, &norm)) {
+    _Optional Primitive *const pp = group_get_primitive(group, p);
+    if (!pp) {
+      continue;
+    }
+    if (primitive_set_normal(&*pp, varray, &norm)) {
       if (flags & FLAGS_VERBOSE) {
         printf("Flipped ground polygon %d\n", p);
       }
@@ -103,7 +106,7 @@ static bool parse_flat(Reader * const r, const int object_count,
            nvertices, vertices_start, vertices_start);
   }
 
-  Primitive *pp = NULL;
+  _Optional Primitive *pp = NULL;
 
   if (!(flags & FLAGS_LIST)) {
     if (vertex_array_alloc_vertices(varray, nvertices) < nvertices) {
@@ -118,7 +121,7 @@ static bool parse_flat(Reader * const r, const int object_count,
               "(object %d)\n", object_count);
       return false;
     }
-    primitive_set_id(pp, group_get_num_primitives(group));
+    primitive_set_id(&*pp, group_get_num_primitives(group));
   }
 
   for (int v = 0; v < nvertices; ++v) {
@@ -147,7 +150,7 @@ static bool parse_flat(Reader * const r, const int object_count,
       puts("");
     }
 
-    if (primitive_add_side(pp, v) < 0) {
+    if (primitive_add_side(&*pp, v) < 0) {
       fprintf(stderr, "Failed to add side: too many sides? "
                       "(side %d of object %d)\n",
               v, object_count);
@@ -161,7 +164,7 @@ static bool parse_flat(Reader * const r, const int object_count,
 
   if (flags & FLAGS_VERBOSE) {
     puts("Flat:");
-    primitive_print(pp, varray);
+    primitive_print(&*pp, varray);
     puts("");
   }
 
@@ -252,13 +255,13 @@ static bool parse_primitives(Reader * const r, const int object_count,
     }
 
     if (!(flags & FLAGS_LIST)) {
-      Primitive * const pp = group_add_primitive(group);
+      _Optional Primitive * const pp = group_add_primitive(group);
       if (pp == NULL) {
         fprintf(stderr, "Failed to allocate primitive memory "
                 "(primitive %d of object %d)\n", p, object_count);
         return false;
       }
-      primitive_set_id(pp, group_get_num_primitives(group));
+      primitive_set_id(&*pp, group_get_num_primitives(group));
 
       const int nsides = reader_fgetc(r);
       if (nsides == EOF) {
@@ -291,7 +294,7 @@ static bool parse_primitives(Reader * const r, const int object_count,
           return false;
         }
 
-        if (primitive_add_side(pp, v) < 0) {
+        if (primitive_add_side(&*pp, v) < 0) {
           fprintf(stderr, "Failed to add side: too many sides? "
                           "(side %d of primitive %d of object %d)\n",
                   s, p, object_count);
@@ -299,7 +302,7 @@ static bool parse_primitives(Reader * const r, const int object_count,
         }
       }
 
-      int const side = primitive_get_skew_side(pp, varray);
+      int const side = primitive_get_skew_side(&*pp, varray);
       if (side >= 0) {
         fprintf(stderr, "Warning: skew polygon detected "
                         "(side %d of primitive %d of object %d)\n",
@@ -309,7 +312,7 @@ static bool parse_primitives(Reader * const r, const int object_count,
       if (flags & FLAGS_VERBOSE) {
         printf("Primitive %d:\n",
                group_get_num_primitives(group) - 1);
-        primitive_print(pp, varray);
+        primitive_print(&*pp, varray);
         puts("");
       }
     }
@@ -340,7 +343,11 @@ static bool parse_primitives(Reader * const r, const int object_count,
     if (flags & FLAGS_LIST) {
       continue;
     }
-    primitive_set_colour(group_get_primitive(group, p), colour);
+    _Optional Primitive *const pp = group_get_primitive(group, p);
+    if (!pp) {
+      continue;
+    }
+    primitive_set_colour(&*pp, colour);
   }
 
   return true;
@@ -368,7 +375,10 @@ static void mark_vertices(VertexArray * const varray,
       const int nvertices = vertex_array_get_num_vertices(varray);
       for (int v = 0; v < nvertices; ++v) {
         if (!vertex_array_is_used(varray, v)) {
-          Coord (*coords)[3] = vertex_array_get_coords(varray, v);
+          _Optional Coord (*coords)[3] = vertex_array_get_coords(varray, v);
+          if (!coords) {
+            continue;
+          }
           printf("Vertex %d {%g,%g,%g} is unused (object %d)\n", v,
                  (*coords)[0], (*coords)[1], (*coords)[2], object_count);
           ++count;
@@ -379,7 +389,7 @@ static void mark_vertices(VertexArray * const varray,
   }
 }
 
-static int get_false_colour(const Primitive *pp, void *arg)
+static int get_false_colour(const Primitive *pp, _Optional void *arg)
 {
   NOT_USED(pp);
   NOT_USED(arg);
@@ -391,7 +401,7 @@ static int get_false_colour(const Primitive *pp, void *arg)
 }
 
 static int get_human_material(char *buf, size_t buf_size,
-                              int const colour, void *arg)
+                              int const colour, _Optional void *arg)
 {
   NOT_USED(arg);
   return snprintf(buf, buf_size, "%s_%d",
@@ -399,13 +409,13 @@ static int get_human_material(char *buf, size_t buf_size,
 }
 
 static int get_material(char *const buf, size_t const buf_size,
-                        int const colour, void *arg)
+                        int const colour, _Optional void *arg)
 {
   NOT_USED(arg);
   return snprintf(buf, buf_size, "riscos_%d", colour);
 }
 
-static bool process_object(Reader * const r, FILE * const out,
+static bool process_object(Reader * const r, _Optional FILE * const out,
                            const char * const object_name,
                            const int object_count,
                            VertexArray * const varray,
@@ -514,7 +524,7 @@ static bool process_object(Reader * const r, FILE * const out,
       DEBUGF("No need to renumber %d vertices\n", vobject);
     }
 
-    if (fprintf(out, "\no %s\n", object_name) < 0) {
+    if (fprintf(&*out, "\no %s\n", object_name) < 0) {
       fprintf(stderr,
               "Failed writing to output file: %s\n",
               strerror(errno));
@@ -533,11 +543,11 @@ static bool process_object(Reader * const r, FILE * const out,
       mstyle = MeshStyle_TriangleStrip;
     }
 
-    if (!output_vertices(out, vobject, varray, -1) ||
-        !output_primitives(out, object_name, *vtotal, vobject,
+    if (!output_vertices(&*out, vobject, varray, -1) ||
+        !output_primitives(&*out, object_name, *vtotal, vobject,
                            varray, group, 1,
                            (flags & FLAGS_FALSE_COLOUR) ?
-                             get_false_colour : NULL,
+                             get_false_colour : (output_primitives_get_colour *)NULL,
                            (flags & FLAGS_HUMAN_READABLE) ?
                              get_human_material : get_material,
                            NULL, vstyle, mstyle)) {
@@ -614,8 +624,8 @@ static bool read_index(Reader * const in, const int first, const int last,
   return success;
 }
 
-static bool process_objects(Reader * const in, FILE * const out,
-        int const first, int const last, const char * const name,
+static bool process_objects(Reader * const in, _Optional FILE * const out,
+        int const first, int const last, _Optional const char * const name,
         const long int *const index, const unsigned int flags)
 {
   assert(in != NULL);
@@ -649,7 +659,7 @@ static bool process_objects(Reader * const in, FILE * const out,
     }
 
     if (name != NULL) {
-      if (!strcmp(name, object_name)) {
+      if (!strcmp(&*name, object_name)) {
         /* Stop after finding the named object (assuming there are
            no others of the same name) */
         stop = true;
@@ -700,8 +710,8 @@ static bool process_objects(Reader * const in, FILE * const out,
   return success;
 }
 
-bool apoc_to_obj(Reader * const in, FILE * const out,
-                 int first, int last, const char * const name,
+bool apoc_to_obj(Reader * const in, _Optional FILE * const out,
+                 int first, int last, _Optional const char * const name,
                  const long int index_offset, const char * const mtl_file,
                  const unsigned int flags)
 {
@@ -714,9 +724,9 @@ bool apoc_to_obj(Reader * const in, FILE * const out,
   assert(!(flags & ~FLAGS_ALL));
 
   if (out != NULL &&
-      fprintf(out, "# Apocalypse graphics\n"
-                   "# Converted by ApoctoObj "VERSION_STRING"\n"
-                   "mtllib %s\n", mtl_file) < 0) {
+      fprintf(&*out, "# Apocalypse graphics\n"
+                     "# Converted by ApoctoObj "VERSION_STRING"\n"
+                     "mtllib %s\n", mtl_file) < 0) {
     fprintf(stderr, "Failed writing to output file: %s\n",
             strerror(errno));
     return false;

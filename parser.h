@@ -14,8 +14,8 @@
 /* StreamLib headers */
 #include "Reader.h"
 
-bool apoc_to_obj(Reader *in, FILE *out,
-                 const int first, const int last, const char *name,
+bool apoc_to_obj(Reader *in, _Optional FILE *out,
+                 const int first, const int last, _Optional const char *name,
                  const long int index_offset,
                  const char *mtl_file, const unsigned int flags);
 
