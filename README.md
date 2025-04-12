@@ -3,7 +3,7 @@ Apocalypse to Wavefront convertor
 
 (C) Christopher Bazley, 2020
 
-Version 0.04 (11 Apr 2025)
+Version 0.05 (13 Apr 2025)
 
 -----------------------------------------------------------------------------
  1   Introduction and Purpose
@@ -741,6 +741,9 @@ Vertex data format:
 
 0.04 (11 Apr 2025)
 - Dogfooding the _Optional qualifier.
+
+0.05 (13 Apr 2025)
+- Use the renamed output_primitives_get_(colour|material) types.
 
 -----------------------------------------------------------------------------
 8  Compiling the software
