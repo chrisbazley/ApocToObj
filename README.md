@@ -3,7 +3,7 @@ Apocalypse to Wavefront convertor
 
 (C) Christopher Bazley, 2020
 
-Version 0.05 (13 Apr 2025)
+Version 0.06 (11 May 2025)
 
 -----------------------------------------------------------------------------
  1   Introduction and Purpose
@@ -744,6 +744,12 @@ Vertex data format:
 
 0.05 (13 Apr 2025)
 - Use the renamed output_primitives_get_(colour|material) types.
+
+0.06 (11 May 2025)
+- Replaced local definitions with an Optional.h header shared with other
+  programs.
+- The output_primitives function doesn't accept unvarnished null as a
+  callback argument anymore.
 
 -----------------------------------------------------------------------------
 8  Compiling the software

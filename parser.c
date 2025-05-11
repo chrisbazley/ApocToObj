@@ -389,7 +389,7 @@ static void mark_vertices(VertexArray * const varray,
   }
 }
 
-static int get_false_colour(const Primitive *pp, _Optional void *arg)
+static int get_false_colour(const Primitive *pp, void *arg)
 {
   NOT_USED(pp);
   NOT_USED(arg);
@@ -401,7 +401,7 @@ static int get_false_colour(const Primitive *pp, _Optional void *arg)
 }
 
 static int get_human_material(char *buf, size_t buf_size,
-                              int const colour, _Optional void *arg)
+                              int const colour, void *arg)
 {
   NOT_USED(arg);
   return snprintf(buf, buf_size, "%s_%d",
@@ -409,7 +409,7 @@ static int get_human_material(char *buf, size_t buf_size,
 }
 
 static int get_material(char *const buf, size_t const buf_size,
-                        int const colour, _Optional void *arg)
+                        int const colour, void *arg)
 {
   NOT_USED(arg);
   return snprintf(buf, buf_size, "riscos_%d", colour);
@@ -550,7 +550,7 @@ static bool process_object(Reader * const r, _Optional FILE * const out,
                              get_false_colour : (OutputPrimitivesGetColourFn *)NULL,
                            (flags & FLAGS_HUMAN_READABLE) ?
                              get_human_material : get_material,
-                           NULL, vstyle, mstyle)) {
+                           (void *)NULL, vstyle, mstyle)) {
       fprintf(stderr, "Failed writing to output file: %s\n",
               strerror(errno));
       return false;
