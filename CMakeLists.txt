@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.11)
+project(ApocToObj C)
+
+include(FetchContent)
+
+FetchContent_Declare(CBUtil GIT_REPOSITORY git@github.com:chrisbazley/CBUtilLib.git GIT_TAG main)
+FetchContent_Declare(Stream GIT_REPOSITORY git@github.com:chrisbazley/StreamLib.git GIT_TAG main)
+FetchContent_Declare(3dObj GIT_REPOSITORY git@github.com:chrisbazley/3dObjLib.git GIT_TAG main)
+
+FetchContent_MakeAvailable(CBUtil Stream 3dObj)
+
+set(CMAKE_C_STANDARD 99)
+add_compile_options(-Wall -Wextra -Wsign-compare -pedantic)
+
+set(SOURCES 
+    apoctoobj.c parser.c names.c colours.c
+)
+
+add_executable(ApocToObj ${SOURCES})
+
+target_link_libraries(ApocToObj PRIVATE 
+    CBUtil
+    Stream
+    3dObj
+    m
+)
+
+target_compile_definitions(ApocToObj PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_OUTPUT>
+    $<$<CONFIG:Release>:NDEBUG>
+)
+
+target_compile_options(ApocToObj PRIVATE
+    $<$<CONFIG:Release>:-O3>
+)
