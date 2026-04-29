@@ -8,8 +8,12 @@
 #define MISC_H
 
 /* Modify these definitions for Unix or Windows file paths. */
+#ifndef PATH_SEPARATOR
 #define PATH_SEPARATOR '.'
+#endif
+#ifndef EXT_SEPARATOR
 #define EXT_SEPARATOR '/'
+#endif
 
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
 
