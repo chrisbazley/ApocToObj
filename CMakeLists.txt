@@ -3,9 +3,9 @@ project(ApocToObj C)
 
 include(FetchContent)
 
-FetchContent_Declare(CBUtil GIT_REPOSITORY git@github.com:chrisbazley/CBUtilLib.git GIT_TAG main)
-FetchContent_Declare(Stream GIT_REPOSITORY git@github.com:chrisbazley/StreamLib.git GIT_TAG main)
-FetchContent_Declare(3dObj GIT_REPOSITORY git@github.com:chrisbazley/3dObjLib.git GIT_TAG main)
+FetchContent_Declare(CBUtil GIT_REPOSITORY https://github.com/chrisbazley/CBUtilLib.git GIT_TAG main)
+FetchContent_Declare(Stream GIT_REPOSITORY https://github.com/chrisbazley/StreamLib.git GIT_TAG main)
+FetchContent_Declare(3dObj GIT_REPOSITORY https://github.com/chrisbazley/3dObjLib.git GIT_TAG main)
 
 FetchContent_MakeAvailable(CBUtil Stream 3dObj)
 
