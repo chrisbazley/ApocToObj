@@ -41,7 +41,6 @@ target_link_libraries(ApocToObj PRIVATE
     CBUtil
     Stream
     3dObj
-    m
 )
 
 target_compile_definitions(ApocToObj PRIVATE
