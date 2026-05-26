@@ -34,7 +34,9 @@ set(SOURCES
     apoctoobj.c parser.c names.c colours.c
 )
 
-add_executable(ApocToObj ${SOURCES})
+file(GLOB HEADER_FILES CONFIGURE_DEPENDS "*.h")
+
+add_executable(ApocToObj ${SOURCES} ${HEADER_FILES})
 
 target_link_libraries(ApocToObj PRIVATE 
     CBUtil
