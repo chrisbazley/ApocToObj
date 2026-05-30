@@ -46,9 +46,4 @@ target_link_libraries(ApocToObj PRIVATE
 
 target_compile_definitions(ApocToObj PRIVATE
     $<$<CONFIG:Debug>:DEBUG_OUTPUT>
-    $<$<CONFIG:Release>:NDEBUG>
-)
-
-target_compile_options(ApocToObj PRIVATE
-    $<$<CONFIG:Release>:-O3>
 )
