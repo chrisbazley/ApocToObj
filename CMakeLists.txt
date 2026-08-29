@@ -102,3 +102,28 @@ target_link_libraries(ApocToObj PRIVATE
 target_compile_definitions(ApocToObj PRIVATE
     $<$<CONFIG:Debug>:DEBUG_OUTPUT>
 )
+
+enable_testing()
+add_test(NAME ApocToObjIntegrationTest COMMAND ${CMAKE_COMMAND}
+    -D APOCTOOBJ=$<TARGET_FILE:ApocToObj>
+    -D DEBUG_OUTPUT=$<CONFIG:Debug>
+    -P ${CMAKE_CURRENT_SOURCE_DIR}/RunTests.cmake
+)
+set_tests_properties(ApocToObjIntegrationTest PROPERTIES
+    TIMEOUT 300
+    LABELS integration
+)
+
+if(USE_FORTIFY)
+    add_test(NAME ApocToObjFortifyFailureTest COMMAND ${CMAKE_COMMAND}
+        -D APOCTOOBJ=$<TARGET_FILE:ApocToObj>
+        -D FORTIFY_FAILURE_TEST=TRUE
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/RunTests.cmake
+    )
+    set_tests_properties(ApocToObjFortifyFailureTest PROPERTIES
+        ENVIRONMENT "APOC_FORTIFY_FAILURE_SIMULATION=1"
+        LABELS "integration;fortify"
+        RUN_SERIAL TRUE
+        TIMEOUT 300
+    )
+endif()

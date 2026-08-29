@@ -762,9 +762,22 @@ libraries and programs with minimal manual intervention.
 For example, use the following commands to build on Linux:
 ```
   cmake -G 'Unix Makefiles' -S . -B build
-  cd build
-  make
+  cmake --build build
+  ctest --test-dir build --output-on-failure
 ```
+
+  The integration test downloads the original Apocalypse `APCOD` file from
+the Acorn Archimedes archive, verifies it by SHA-256 checksum, converts all
+polygon meshes and flats, and checks the converter's output and command-line
+interface. Internet access is needed the first time it runs; CMake reuses the
+verified download thereafter.
+
+  A build configured with `-DUSE_FORTIFY=ON` also has a focused integration
+test that simulates every allocation and intercepted I/O failure while
+converting the smallest flat. Failure simulation is disabled for ordinary
+program runs. Set `APOC_FORTIFY_FAILURE_SIMULATION=1` to enable it, and
+optionally set `APOC_FORTIFY_FAILURE_ATTEMPTS` to a positive number to limit
+the attempts.
 
   Three make files are also supplied:
 
