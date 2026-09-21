@@ -23,7 +23,7 @@ include MakeCommon
 
 DebugObjectsApoc = $(addsuffix .debug,$(ObjectList))
 ReleaseObjectsApoc = $(addsuffix .o,$(ObjectList))
-DebugLibs = Fortify CBDebug CBUtildbg Streamdbg 3dObjdbg
+DebugLibs = CBPseudo Fortify CBDebug CBUtildbg Streamdbg 3dObjdbg
 ReleaseLibs = CBUtil Stream 3dObj
 
 # Final targets:
