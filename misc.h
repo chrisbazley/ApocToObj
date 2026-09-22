@@ -7,6 +7,8 @@
 #ifndef MISC_H
 #define MISC_H
 
+#include "MacroUtils.h"
+
 /* Modify these definitions for Unix or Windows file paths. */
 #ifndef PATH_SEPARATOR
 #ifdef _WIN32
@@ -25,11 +27,6 @@
 #define PATH_SEPARATOR '.'
 #endif
 #endif
-
-#define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
-
-/* Suppress compiler warnings about an unused function argument. */
-#define NOT_USED(x) ((void)(x))
 
 #ifdef FORTIFY
 #include "fortify.h"
