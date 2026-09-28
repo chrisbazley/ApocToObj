@@ -591,7 +591,7 @@ static bool read_index(Reader * const in, const int first, const int last,
     fprintf(stderr, "Failed to seek objects index at "
                     "file position %ld (0x%lx)\n",
             index_offset, index_offset);
-    return NULL;
+    return false;
   }
 
   bool success = true;
