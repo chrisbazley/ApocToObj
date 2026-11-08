@@ -35,7 +35,7 @@
 /* CBUtilLib headers */
 #include "StrExtra.h"
 #include "ArgUtils.h"
-#include "StringBuff.h"
+#include "strb.h"
 
 /* StreamLib headers */
 #include "Reader.h"
@@ -452,20 +452,17 @@ int main(int argc, const char *argv[])
     for (; n < argc && rtn == EXIT_SUCCESS; n++) {
       /* Invent an output file name */
       assert(argv[n] != NULL);
-      StringBuffer default_output;
-      stringbuffer_init(&default_output);
-      if (!stringbuffer_append(&default_output, argv[n], SIZE_MAX) ||
-          !stringbuffer_append_separated(&default_output, EXT_SEPARATOR,
-                                         "obj")) {
+      STRB_DECL_ALLOC(default_output, 0);
+      if (strb_printf(default_output, "%s%c%s", argv[n], EXT_SEPARATOR, "obj")) {
         fprintf(stderr, "Failed to allocate memory for output file path\n");
         rtn = EXIT_FAILURE;
       } else if (!process_file(argv[n],
-                               stringbuffer_get_pointer(&default_output),
+                               strb_cptr(default_output),
                                first, last, name, index_offset,
                                mtl_file, flags, time)) {
         rtn = EXIT_FAILURE;
       }
-      stringbuffer_destroy(&default_output);
+      strb_free(default_output);
     }
   } else if (!process_file(in_file, output_file, first, last, name,
                     index_offset, mtl_file, flags, time)) {

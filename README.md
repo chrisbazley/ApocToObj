@@ -803,9 +803,15 @@ subdirectories for compiler output.
 macro definitions in misc.h. These must be defined according to the file name
 convention on the target platform (e.g. '.' and '\\' for DOS or Windows).
 
+The experimental string-buffer migration also requires
+[strb_t](https://github.com/chrisbazley/strb_t). CMake fetches a pinned revision;
+manual builds need its header and dynamic-allocation library (`strb` or
+`strbdbg`).
+
   Source code is only supplied for the command-line program. To compile
 and link the code you will also require an ISO 9899:1999 standard 'C'
-library and three of my own libraries: 3dObjLib, CBUtilLib and StreamLib.
+library and four of my own libraries: 3dObjLib, CBUtilLib, StreamLib and
+strb_t.
 These are available separately from https://github.com/chrisbazley/
 
 -----------------------------------------------------------------------------

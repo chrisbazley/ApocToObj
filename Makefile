@@ -16,8 +16,8 @@ include MakeCommon
 
 DebugObjectsApoc = $(addsuffix .debug,$(ObjectList))
 ReleaseObjectsApoc = $(addsuffix .o,$(ObjectList))
-DebugLibs = CBUtildbg Streamdbg 3dObjdbg m
-ReleaseLibs = CBUtil Stream 3dObj m
+DebugLibs = strbdbg CBUtildbg Streamdbg 3dObjdbg m
+ReleaseLibs = strb CBUtil Stream 3dObj m
 
 # Final targets:
 all: ApocToObj ApocToObjD 
