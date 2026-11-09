@@ -20,7 +20,6 @@
 
 /* ISO library header files */
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "strb.h"
 
@@ -28,20 +27,13 @@
 #include "names.h"
 #include "misc.h"
 
-const char *get_flat_name(const int index)
+int get_flat_name(strb_t *const name, const int index)
 {
-  static char buffer[64];
-  strb_t *const name = STRB_TMP_USE(buffer);
-  if (strb_printf(name, "flat_%d", index)) {
-    abort();
-  }
-  return buffer;
+  return strb_putf(name, "flat_%d", index);
 }
 
-const char *get_obj_name(const int index)
+int get_obj_name(strb_t *const name, const int index)
 {
-  static char buffer[64];
-  strb_t *const name = STRB_TMP_USE(buffer);
   static struct {
     int first;
     int last;
@@ -105,20 +97,14 @@ const char *get_obj_name(const int index)
         frame = index - names[i].first;
       }
       if (frame >= 0) {
-        if (strb_printf(name, "%s_f%d", names[i].string, frame)) {
-          abort();
-        }
-        n = buffer;
+        return strb_putf(name, "%s_f%d", names[i].string, frame);
       }
     }
   }
 
   if (n == NULL) {
-    if (strb_printf(name, "apocalypse_%d", index)) {
-      abort();
-    }
-    n = buffer;
+    return strb_putf(name, "apocalypse_%d", index);
   }
 
-  return &*n;
+  return strb_puts(name, &*n);
 }
