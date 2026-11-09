@@ -650,12 +650,13 @@ static bool process_objects(Reader * const in, _Optional FILE * const out,
        ++object_count) {
 
     /* Is this object the named one? */
-    const char *object_name;
-    if (flags & FLAGS_FLATS) {
-      object_name = get_flat_name(object_count);
-    } else {
-      object_name = get_obj_name(object_count);
+    STRB_DECL_FIXED(object_name_buffer, 64);
+    if ((flags & FLAGS_FLATS) ?
+        get_flat_name(object_name_buffer, object_count) :
+        get_obj_name(object_name_buffer, object_count)) {
+      abort();
     }
+    const char *const object_name = strb_cptr(object_name_buffer);
 
     if (name != NULL) {
       if (!strcmp(&*name, object_name)) {
