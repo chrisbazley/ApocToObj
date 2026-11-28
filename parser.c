@@ -546,7 +546,7 @@ static bool process_object(Reader * const r, _Optional FILE * const out,
         !output_primitives(&*out, object_name, *vtotal, vobject,
                            varray, group, 1,
                            (flags & FLAGS_FALSE_COLOUR) ?
-                             get_false_colour : (OutputPrimitivesGetColourFn *)NULL,
+                             get_false_colour : NULL,
                            (flags & FLAGS_HUMAN_READABLE) ?
                              get_human_material : get_material,
                            (void *)NULL, vstyle, mstyle)) {
